@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8" />
+        <title>Settings</title>
+        <style>
+            body {
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+                padding: 10px;
+                background: #eeeeee;
+            }
+            h1 {
+                font-size: 16px;
+                margin: 0;
+                padding: 0 0 10px 0;
+            }
+            ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+            ul > li {
+                font-size: 14px;
+                padding: 3px 0;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>background Color</h1>
+        <ul>
+            <li>
+                <label
+                    ><input type="radio" , name="colors" , value="skyblue" />
+                    Skyblue</label
+                >
+            </li>
+            <li>
+                <label
+                    ><input type="radio" , name="colors" , value="tomato" />
+                    Tomato</label
+                >
+            </li>
+            <li>
+                <label
+                    ><input type="radio" , name="colors" , value="slategray" />
+                    Slate Gray</label
+                >
+            </li>
+        </ul>
+        <script>
+            "use strict";
+
+            const ipcRenderer = window.ipcRenderer;
+
+            let currentColor = localStorage.getItem("color");
+            let colors = document.getElementsByName("colors");
+            for (let i = 0; i < colors.length; i++) {
+                if (currentColor === colors[i].value) {
+                    colors[i].checked = true;
+                }
+
+                colors[i].addEventListener("change", function () {
+                    let color = this.value;
+
+                    // ipc 通信で main process へ背景色の情報を渡す
+                    ipcRenderer.send("settings_changed", color);
+                });
+            }
+        </script>
+    </body>
+</html>

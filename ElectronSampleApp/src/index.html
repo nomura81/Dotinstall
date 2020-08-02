@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8" />
+        <title>Quotes!</title>
+        <style>
+            body {
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+                padding: 10px;
+                background: skyblue;
+            }
+            p {
+                color: #ffffff;
+                font-size: 36px;
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <p id="quote">Just do it!</p>
+        <script>
+            "use strict";
+
+            const ipcRenderer = window.ipcRenderer;
+            const remote = window.remote;
+            const Menu = remote.Menu;
+            const MenuItem = remote.MenuItem;
+            const shell = remote.shell;
+
+            // 右クリックメニュー
+            let menu = new Menu();
+            menu.append(
+                new MenuItem({
+                    label: "Skyblue",
+                    click: () => {
+                        setBackgroundColor("skyblue");
+                    },
+                })
+            );
+            menu.append(
+                new MenuItem({
+                    label: "Tomato",
+                    click: () => {
+                        setBackgroundColor("tomato");
+                    },
+                })
+            );
+            menu.append(
+                new MenuItem({
+                    label: "Slate Gray",
+                    click: () => {
+                        setBackgroundColor("slategray");
+                    },
+                })
+            );
+            window.addEventListener("contextmenu", (event) => {
+                event.preventDefault();
+                menu.popup(remote.getCurrentWindow());
+            });
+
+            // 背景色情報を Web ストレージより取得する
+            let color = localStorage.getItem("color") || "skyblue";
+            setBackgroundColor(color);
+
+            function setBackgroundColor(color) {
+
+                document.body.style.backgroundColor = color;
+                localStorage.setItem("color", color);  // Web ストレージに保存
+            }
+
+            const quote = document.getElementById("quote");
+            const quotes = [
+                "Just do it!",
+                "Done is better than perfect",
+                "Stay hungry, stay foolish",
+                "Ask, do not tell",
+                "Focus on the user",
+                "Keep trying",
+                "Nothing is impossible",
+                "That which is measured, improves",
+            ];
+            window.addEventListener("click", function () {
+                // JavaScript で乱数を生成させる常套句
+                quote.innerHTML = quotes[Math.floor(Math.random() * quotes.length)];
+            });
+
+            // ipc 通信で main process から背景色の情報を受け取る
+            ipcRenderer.on("set_bgcolor", (event, color) => {
+                setBackgroundColor(color);
+            });
+
+            // アプリ起動後3秒後に外部サイトへのリンクとなるデスクトップ通知を表示
+            setTimeout(() => {
+                let notification = new Notification("Quote!", {
+                    body: "Visit our website!",
+                });
+                notification.onclick = () => {
+                    shell.openExternal("http://dotinstall.com");
+                };
+            }, 3000);
+        </script>
+    </body>
+</html>

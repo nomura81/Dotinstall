@@ -1,0 +1,24 @@
+{
+  "name": "electron-sample-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron .",
+    "dist": "electron-builder --mac --x64"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^9.1.1",
+    "electron-builder": "^22.7.0"
+  },
+  "build": {
+    "productName": "electron-sample-app",
+    "appId": "com.app.sample.electron",
+    "directories": {
+      "output": "dist"
+    }
+  }
+}
